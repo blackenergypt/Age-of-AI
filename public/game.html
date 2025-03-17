@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age of AI - Jogo</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body style="overflow: hidden;">
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="game-ui">
+            <div id="resources-panel">
+                <div class="resource">
+                    <img src="images/icons/wheat.png" alt="Comida">
+                    <span id="food-count">0</span>
+                </div>
+                <div class="resource">
+                    <img src="images/icons/log.png" alt="Madeira">
+                    <span id="wood-count">0</span>
+                    <button id="collect-wood">Coletar Madeira</button>
+                </div>
+                <div class="resource">
+                    <img src="images/icons/granite.png" alt="Pedra">
+                    <span id="stone-count">0</span>
+                    <button id="collect-stone">Coletar Pedra</button>
+                </div>
+                <div class="resource">
+                    <img src="images/icons/gold.png" alt="Ouro">
+                    <span id="gold-count">0</span>
+                </div>
+                <button id="build-house">Construir Casa</button>
+            </div>
+            
+            <div id="minimap">
+                <canvas id="minimap-canvas"></canvas>
+            </div>
+            
+            <div id="action-panel">
+                <h3>Ações</h3>
+                <div id="action-buttons">
+                    <button id="open-store" class="btn">Abrir Loja</button>
+                    <!-- Outros botões de ação podem ser adicionados aqui -->
+                </div>
+            </div>
+            
+            <div id="chat-panel">
+                <div id="chat-messages"></div>
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
+                    <button id="chat-send">Enviar</button>
+                </div>
+            </div>
+            
+            <div id="notification-area"></div>
+        </div>
+    </div>
+    
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>Carregando o mundo de Age of AI...</p>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/input-handler.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/game-client.js"></script>
+    <script src="js/main.js"></script>
+    <script type="module" src="js/map.js"></script>
+
+    <script>
+        document.getElementById('open-store').addEventListener('click', () => {
+            window.location.href = '/store'; // Redirecionar para a loja
+        });
+    </script>
+</body>
+</html>

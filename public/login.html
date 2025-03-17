@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Age of AI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Carregar o script de sessão no head para verificar antes de renderizar a página -->
+    <script src="js/session-fix.js"></script>
+</head>
+<body style="overflow: hidden;">
+    <audio id="background-music" loop autoplay>
+        <source src="audio/background-music.wav" type="audio/wav">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <div id="game-container">
+        <div id="background-image"></div>
+        
+        <div class="screen">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1 class="game-title">Age of AI</h1>
+                    <p class="tagline">Entrar</p>
+                </div>
+                
+                <form id="loginForm" class="auth-form">
+                    <div class="auth-message" id="loginMessage"></div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <div class="password-input">
+                            <input type="password" id="password" name="password" required autocomplete="current-password">
+                            <i class="toggle-password fas fa-eye" data-target="password"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <label for="rememberMe">Lembrar-me</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="primary-button">
+                            <span class="button-icon">🔑</span>
+                            Entrar
+                        </button>
+                    </div>
+                                        
+                    <div class="auth-links">
+                        <p><a href="/forgot-password">Esqueceu sua senha?</a></p>
+                        <p>Não tem uma conta? <a href="/register">Registre-se</a></p>
+                    </div>
+                </form>
+                
+                <div class="social-login">
+                    <p>Ou entre com:</p>
+                    <div class="social-buttons">
+                        <a href="/api/auth/google" class="social-btn google-btn" aria-label="Entrar com Google">
+                            <i class="fab fa-google"></i>
+                            <span class="tooltip">Google</span>
+                        </a>
+                        <a href="/api/auth/facebook" class="social-btn facebook-btn" aria-label="Entrar com Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span class="tooltip">Facebook</span>
+                        </a>
+                        <a href="/api/auth/twitter" class="social-btn twitter-btn" aria-label="Entrar com X">
+                            <i class="fa-brands fa-x-twitter"></i>
+                            <span class="tooltip">X</span>
+                        </a>
+                        <a href="/api/auth/discord" class="social-btn discord-btn" aria-label="Entrar com Discord">
+                            <i class="fab fa-discord"></i>
+                            <span class="tooltip">Discord</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="back-to-home">
+                    <a href="/" class="secondary-button">
+                        <span class="button-icon">🏠</span>
+                        Voltar para a página inicial
+                    </a>
+                </div>
+                
+                <button id="toggle-sound" class="sound-button">
+                    <span id="sound-icon" class="button-icon">🔊</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/sound-control.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-debug.js"></script>
+    <script src="js/package-check.js"></script>
+    <script>
+        // Verificar se o usuário acabou de redefinir a senha
+        const urlParams = new URLSearchParams(window.location.search);
+        const reset = urlParams.get('reset');
+        
+        if (reset === 'true') {
+            const messageElement = document.getElementById('loginMessage');
+            if (messageElement) {
+                messageElement.textContent = 'Senha redefinida com sucesso! Você já pode fazer login.';
+                messageElement.className = 'auth-message success';
+                messageElement.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const discordButton = document.querySelector('.social-btn[data-provider="discord"]');
+            if (discordButton) {
+                discordButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Clicou no botão do Discord');
+                    
+                    // Verificar se a estratégia está disponível
+                    fetch('/api/auth/strategies')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Estratégias disponíveis:', data);
+                            if (data.strategies.includes('discord')) {
+                                window.location.href = '/api/auth/discord';
+                            } else {
+                                alert('Autenticação do Discord não está configurada no servidor.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao verificar estratégias:', error);
+                            alert('Erro ao verificar estratégias de autenticação.');
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

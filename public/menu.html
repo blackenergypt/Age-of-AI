@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Age of AI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/auth-final.js"></script>
+    <script src="js/session-fix.js"></script>
+</head>
+<body style="overflow: hidden;">
+    <audio id="background-music" loop autoplay>
+        <source src="audio/background-music.wav" type="audio/wav">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <div id="game-container">
+        <div id="background-image"></div>
+        
+        <div class="screen">
+            <div class="menu-container">
+                <div class="menu-header">
+                    <h1 class="game-title">Age of AI</h1>
+                    <div class="user-info">
+                        <img src="/images/default-avatar.png" alt="Avatar" class="user-avatar">
+                        <span class="user-name">Jogador</span>
+                        <button id="logout-btn" class="btn-small">Sair</button>
+                    </div>
+                </div>
+                
+                <div class="menu-options">
+                    <div class="menu-option" id="play-online">
+                        <div class="option-icon">🌍</div>
+                        <h3>Jogar Online</h3>
+                        <p>Enfrente jogadores de todo o mundo</p>
+                    </div>
+                    
+                    <div class="menu-option" id="private-game">
+                        <div class="option-icon">🔒</div>
+                        <h3>Partida Privada</h3>
+                        <p>Crie ou entre em uma partida com amigos</p>
+                    </div>
+                    
+                    <div class="menu-option" id="store">
+                        <div class="option-icon">🛒</div>
+                        <h3>Loja</h3>
+                        <p>Adquira itens e personalizações</p>
+                    </div>
+                    
+                    <div class="menu-option" id="settings">
+                        <div class="option-icon">⚙️</div>
+                        <h3>Configurações</h3>
+                        <p>Ajuste as configurações do jogo</p>
+                    </div>
+                </div>
+                <div id="kingdom-actions">
+                    <button id="create-kingdom-button">Criar Reino</button>
+                    <button id="join-kingdom-button">Juntar-se a um Reino</button>
+                </div>
+                <div class="menu-footer">
+                    <button id="logout-btn" class="secondary-button">
+                        <span class="button-icon">🚪</span>
+                        Sair
+                    </button>
+                    
+                    <button id="toggle-sound" class="sound-button">
+                        <span id="sound-icon" class="button-icon">🔊</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Partida Privada -->
+        <div id="private-game-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Partida Privada</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="create-game">Criar Partida</button>
+                        <button class="tab-btn" data-tab="join-game">Entrar em Partida</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="create-game">
+                        <div class="form-group">
+                            <label for="game-name">Nome da Partida</label>
+                            <input type="text" id="game-name" placeholder="Digite um nome para sua partida">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="game-password">Senha (opcional)</label>
+                            <input type="password" id="game-password" placeholder="Deixe em branco para partida sem senha">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="max-players">Número de Jogadores</label>
+                            <select id="max-players">
+                                <option value="2">2 Jogadores</option>
+                                <option value="4" selected>4 Jogadores</option>
+                                <option value="6">6 Jogadores</option>
+                                <option value="8">8 Jogadores</option>
+                            </select>
+                        </div>
+                        
+                        <button id="create-game-btn" class="primary-button">Criar Partida</button>
+                    </div>
+                    
+                    <div class="tab-content" id="join-game">
+                        <div class="form-group">
+                            <label for="game-code">Código da Partida</label>
+                            <input type="text" id="game-code" placeholder="Digite o código da partida">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="join-password">Senha (se necessário)</label>
+                            <input type="password" id="join-password" placeholder="Deixe em branco se não houver senha">
+                        </div>
+                        
+                        <button id="join-game-btn" class="primary-button">Entrar na Partida</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="kingdom-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-modal">&times;</span>
+                <h2>Selecione ou Crie um Reino</h2>
+                <input type="text" id="kingdom-name" placeholder="Nome do Reino">
+                <button id="create-kingdom-button">Criar Reino</button>
+                <input type="text" id="join-kingdom-id" placeholder="ID do Reino">
+                <button id="join-kingdom-button">Juntar-se ao Reino</button>
+            </div>
+        </div>
+        <!-- Modal de Loja -->
+        <div id="store-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Loja</h2>
+                <div class="modal-body">
+                    <p>Loja em desenvolvimento. Em breve você poderá adquirir itens e personalizações!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Configurações -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Configurações</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-tabs">
+                        <button class="settings-tab active" data-settings="audio">Áudio</button>
+                        <button class="settings-tab" data-settings="graphics">Gráficos</button>
+                        <button class="settings-tab" data-settings="gameplay">Jogabilidade</button>
+                    </div>
+                    
+                    <div class="settings-content active" id="audio-settings">
+                        <div class="setting-item">
+                            <label for="music-volume">Volume da Música</label>
+                            <div class="slider-container">
+                                <input type="range" id="music-volume" min="0" max="100" value="30">
+                                <span id="music-volume-value">30%</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="sfx-volume">Volume dos Efeitos</label>
+                            <div class="slider-container">
+                                <input type="range" id="sfx-volume" min="0" max="100" value="50">
+                                <span id="sfx-volume-value">50%</span>
+                            </div>
+                        </div>
+                        <div class="setting-item checkbox-item">
+                            <input type="checkbox" id="mute-in-background" checked>
+                            <label for="mute-in-background">Silenciar quando em segundo plano</label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-content" id="graphics-settings">
+                        <div class="setting-item">
+                            <label for="graphics-quality">Qualidade Gráfica</label>
+                            <select id="graphics-quality">
+                                <option value="low">Baixa</option>
+                                <option value="medium" selected>Média</option>
+                                <option value="high">Alta</option>
+                            </select>
+                        </div>
+                        <div class="setting-item checkbox-item">
+                            <input type="checkbox" id="show-fps" checked>
+                            <label for="show-fps">Mostrar FPS</label>
+                        </div>
+                        <div class="setting-item checkbox-item">
+                            <input type="checkbox" id="enable-shadows">
+                            <label for="enable-shadows">Ativar Sombras</label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-content" id="gameplay-settings">
+                        <div class="setting-item checkbox-item">
+                            <input type="checkbox" id="show-tutorials" checked>
+                            <label for="show-tutorials">Mostrar Tutoriais</label>
+                        </div>
+                        <div class="setting-item checkbox-item">
+                            <input type="checkbox" id="auto-save" checked>
+                            <label for="auto-save">Salvar Automaticamente</label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="camera-speed">Velocidade da Câmera</label>
+                            <div class="slider-container">
+                                <input type="range" id="camera-speed" min="1" max="10" value="5">
+                                <span id="camera-speed-value">5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button id="save-settings" class="primary-button">Salvar Configurações</button>
+                        <button id="reset-settings" class="secondary-button">Restaurar Padrões</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/sound-control.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html> 

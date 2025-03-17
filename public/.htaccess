@@ -1,0 +1,17 @@
+# Habilitar o módulo de reescrita
+RewriteEngine On
+
+# Redirecionar para HTTPS (opcional)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remover extensão .html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+
+# Redirecionar /index para /
+RewriteRule ^index$ / [R=301,L]
+
+# Definir página de erro 404
+ErrorDocument 404 /404.html 

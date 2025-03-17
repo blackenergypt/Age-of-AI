@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página não encontrada - Age of AI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body style="overflow: hidden;">
+    <audio id="background-music" loop autoplay>
+        <source src="/audio/background-music.wav" type="audio/wav">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <div id="game-container">
+        <div id="background-image"></div>
+        
+        <div class="screen">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1 class="game-title">Age of AI</h1>
+                    <p class="tagline">Página não encontrada</p>
+                </div>
+                
+                <div class="error-container">
+                    <div class="error-icon">🔍</div>
+                    <h2>Erro 404</h2>
+                    <p>A página que você está procurando não existe ou foi movida.</p>
+                    
+                    <div class="error-actions">
+                        <a href="/" class="primary-button">
+                            <span class="button-icon">🏠</span>
+                            Página Inicial
+                        </a>
+                        
+                        <a href="/login" class="secondary-button">
+                            <span class="button-icon">🔑</span>
+                            Login
+                        </a>
+                    </div>
+                </div>
+                
+                <button id="toggle-sound" class="sound-button">
+                    <span id="sound-icon" class="button-icon">🔊</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar áudio do jogo
+            const backgroundMusic = document.getElementById('background-music');
+            if (backgroundMusic) {
+                // Carregar configurações de áudio
+                const savedSettings = localStorage.getItem('gameSettings');
+                if (savedSettings) {
+                    try {
+                        const settings = JSON.parse(savedSettings);
+                        backgroundMusic.volume = (settings.musicVolume || 30) / 100;
+                    } catch (e) {
+                        console.error('Erro ao analisar configurações de áudio:', e);
+                        backgroundMusic.volume = 0.3; // 30% do volume máximo
+                    }
+                } else {
+                    backgroundMusic.volume = 0.3; // 30% do volume máximo
+                }
+            }
+            
+            // Botão de alternar som
+            const toggleSoundBtn = document.getElementById('toggle-sound');
+            const soundIcon = document.getElementById('sound-icon');
+            
+            if (toggleSoundBtn && soundIcon && backgroundMusic) {
+                toggleSoundBtn.addEventListener('click', function() {
+                    if (backgroundMusic.paused) {
+                        backgroundMusic.play();
+                        soundIcon.textContent = '🔊';
+                    } else {
+                        backgroundMusic.pause();
+                        soundIcon.textContent = '🔇';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

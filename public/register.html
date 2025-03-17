@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Age of AI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Carregar o script de sessão no head para verificar antes de renderizar a página -->
+    <script src="js/session-fix.js"></script>
+</head>
+<body style="overflow: hidden;">
+    <audio id="background-music" loop autoplay>
+        <source src="audio/background-music.wav" type="audio/wav">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <div id="game-container">
+        <div id="background-image"></div>
+        
+        <div class="screen">
+            <div class="auth-container register-container">
+                <div class="auth-header">
+                    <h1 class="game-title">Age of AI</h1>
+                    <p class="tagline">Criar Conta</p>
+                </div>
+                
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="nickname">Nickname</label>
+                        <input type="text" id="nickname" name="nickname" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefone (opcional)</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <div class="password-input">
+                            <input type="password" id="password" name="password" required>
+                            <i class="toggle-password fas fa-eye" data-target="password"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Senha</label>
+                        <div class="password-input">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <i class="toggle-password fas fa-eye" data-target="confirmPassword"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="acceptedTerms" name="acceptedTerms" required>
+                        <label for="acceptedTerms">Eu aceito os <a href="/terms" target="_blank">Termos de Uso e Políticas de Privacidade</a></label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="primary-button">
+                            <span class="button-icon">📝</span>
+                            Registrar
+                        </button>
+                    </div>
+                    
+                    <div class="auth-message" id="registerMessage"></div>
+                    
+                    <div class="auth-links">
+                        <p>Já tem uma conta? <a href="/login">Faça login</a></p>
+                    </div>
+                </form>
+                
+                <div class="social-login">
+                    <p>Ou registre-se com:</p>
+                    <div class="social-buttons">
+                        <a href="/api/auth/google" class="social-btn google-btn" aria-label="Registrar com Google">
+                            <i class="fab fa-google"></i>
+                            <span class="tooltip">Google</span>
+                        </a>
+                        <a href="/api/auth/facebook" class="social-btn facebook-btn" aria-label="Registrar com Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span class="tooltip">Facebook</span>
+                        </a>
+                        <a href="/api/auth/twitter" class="social-btn twitter-btn" aria-label="Registrar com X">
+                            <i class="fa-brands fa-x-twitter"></i>
+                            <span class="tooltip">X</span>
+                        </a>
+                        <a href="/api/auth/discord" class="social-btn discord-btn" aria-label="Registrar com Discord">
+                            <i class="fab fa-discord"></i>
+                            <span class="tooltip">Discord</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="back-to-home">
+                    <a href="/" class="secondary-button">
+                        <span class="button-icon">🏠</span>
+                        Voltar para a página inicial
+                    </a>
+                </div>
+                
+                <button id="toggle-sound" class="sound-button">
+                    <span id="sound-icon" class="button-icon">🔊</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/sound-control.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Configurar controle de som
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar áudio do jogo
+            const backgroundMusic = document.getElementById('background-music');
+            if (backgroundMusic) {
+                // Carregar configurações de áudio
+                const savedSettings = localStorage.getItem('gameSettings');
+                if (savedSettings) {
+                    try {
+                        const settings = JSON.parse(savedSettings);
+                        backgroundMusic.volume = (settings.musicVolume || 30) / 100;
+                    } catch (e) {
+                        console.error('Erro ao analisar configurações de áudio:', e);
+                        backgroundMusic.volume = 0.3; // 30% do volume máximo
+                    }
+                } else {
+                    backgroundMusic.volume = 0.3; // 30% do volume máximo
+                }
+            }
+            
+            // Botão de alternar som
+            const toggleSoundBtn = document.getElementById('toggle-sound');
+            const soundIcon = document.getElementById('sound-icon');
+            
+            if (toggleSoundBtn && soundIcon && backgroundMusic) {
+                toggleSoundBtn.addEventListener('click', function() {
+                    if (backgroundMusic.paused) {
+                        backgroundMusic.play();
+                        soundIcon.textContent = '🔊';
+                    } else {
+                        backgroundMusic.pause();
+                        soundIcon.textContent = '🔇';
+                    }
+                });
+            }
+            
+            // Toggle password visibility
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+            if (togglePasswordButtons.length > 0) {
+                togglePasswordButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const passwordInput = document.getElementById(targetId);
+                        
+                        if (passwordInput) {
+                            if (passwordInput.type === 'password') {
+                                passwordInput.type = 'text';
+                                this.classList.remove('fa-eye');
+                                this.classList.add('fa-eye-slash');
+                            } else {
+                                passwordInput.type = 'password';
+                                this.classList.remove('fa-eye-slash');
+                                this.classList.add('fa-eye');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

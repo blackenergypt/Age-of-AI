@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <linearGradient id="stoneGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9E9E9E" />
+      <stop offset="100%" stop-color="#616161" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#stoneGradient)" d="M12,2L2,12l10,10l10-10L12,2z M12,19.17L4.83,12L12,4.83L19.17,12L12,19.17z"/>
+  <path fill="#757575" d="M12,4.83L4.83,12L12,19.17L19.17,12L12,4.83z M12,15.17L8.83,12L12,8.83L15.17,12L12,15.17z"/>
+  <path fill="#9E9E9E" d="M12,8.83L8.83,12L12,15.17L15.17,12L12,8.83z"/>
+</svg> 
