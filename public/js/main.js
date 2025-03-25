@@ -90,69 +90,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const playButton = document.getElementById('play-button');
     const kingdomModal = document.getElementById('kingdom-modal');
-    const closeModalButton = document.getElementById('close-modal');
+    
+    if (playButton && kingdomModal) {
+        const closeModalButton = document.getElementById('close-modal');
+        
+        playButton.addEventListener('click', () => {
+            kingdomModal.style.display = 'block';
+        });
 
-    playButton.addEventListener('click', () => {
-        kingdomModal.style.display = 'block';
-    });
-
-    closeModalButton.addEventListener('click', () => {
-        kingdomModal.style.display = 'none';
-    });
-
-    const createKingdomButton = document.getElementById('create-kingdom-button');
-    const joinKingdomButton = document.getElementById('join-kingdom-button');
-
-    createKingdomButton.addEventListener('click', async () => {
-        const kingdomName = document.getElementById('kingdom-name').value;
-        if (kingdomName) {
-            const response = await fetch('/api/create-kingdom', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                },
-                body: JSON.stringify({ name: kingdomName })
-            });
-
-            if (response.ok) {
-                const newKingdom = await response.json();
-                alert(`Reino "${newKingdom.name}" criado com sucesso!`);
+        if (closeModalButton) {
+            closeModalButton.addEventListener('click', () => {
                 kingdomModal.style.display = 'none';
-            } else {
-                const error = await response.json();
-                alert(`Erro ao criar reino: ${error.message}`);
-            }
-        }
-    });
-
-    joinKingdomButton.addEventListener('click', async () => {
-        const kingdomId = document.getElementById('join-kingdom-id').value;
-        if (kingdomId) {
-            const response = await fetch('/api/join-kingdom', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                },
-                body: JSON.stringify({ kingdomId })
             });
-
-            if (response.ok) {
-                alert('Você se juntou ao reino com sucesso!');
-                kingdomModal.style.display = 'none';
-            } else {
-                const error = await response.json();
-                alert(`Erro ao se juntar ao reino: ${error.message}`);
-            }
         }
-    });
+
+        const createKingdomButton = document.getElementById('create-kingdom-button');
+        const joinKingdomButton = document.getElementById('join-kingdom-button');
+
+        if (createKingdomButton) {
+            createKingdomButton.addEventListener('click', async () => {
+                const kingdomName = document.getElementById('kingdom-name')?.value;
+                if (kingdomName) {
+                    const response = await fetch('/api/create-kingdom', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({ name: kingdomName })
+                    });
+
+                    if (response.ok) {
+                        const newKingdom = await response.json();
+                        alert(`Reino "${newKingdom.name}" criado com sucesso!`);
+                        kingdomModal.style.display = 'none';
+                    } else {
+                        const error = await response.json();
+                        alert(`Erro ao criar reino: ${error.message}`);
+                    }
+                }
+            });
+        }
+
+        if (joinKingdomButton) {
+            joinKingdomButton.addEventListener('click', async () => {
+                const kingdomId = document.getElementById('join-kingdom-id')?.value;
+                if (kingdomId) {
+                    const response = await fetch('/api/join-kingdom', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({ kingdomId })
+                    });
+
+                    if (response.ok) {
+                        alert('Você se juntou ao reino com sucesso!');
+                        kingdomModal.style.display = 'none';
+                    } else {
+                        const error = await response.json();
+                        alert(`Erro ao se juntar ao reino: ${error.message}`);
+                    }
+                }
+            });
+        }
+    }
 
     const collectWoodButton = document.getElementById('collect-wood');
     if (collectWoodButton) {
         collectWoodButton.addEventListener('click', () => {
             // Lógica para coletar madeira
-            gameClient.collectResource('wood');
+            if (window.gameClient) {
+                window.gameClient.collectResource('wood');
+            }
         });
     }
 
@@ -160,7 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (buildHouseButton) {
         buildHouseButton.addEventListener('click', () => {
             // Lógica para construir uma casa
-            gameClient.buildHouse();
+            if (window.gameClient) {
+                window.gameClient.buildHouse();
+            }
         });
     }
 });
