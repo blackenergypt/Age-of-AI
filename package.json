@@ -4,9 +4,11 @@
   "description": "Um jogo RTS estilo Age of Empires usando Node.js e WebSocket",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "NODE_ENV=development nodemon server/server.js",
+    "start": "node start.js",
+    "dev": "NODE_ENV=development nodemon start.js",
+    "server": "node server/server.js",
     "test": "set NODE_ENV=test&& jest",
+    "test-client": "node test-client.js",
     "install-auth": "npm install passport-discord passport-google-oauth20 passport-facebook passport-twitter"
   },
   "dependencies": {

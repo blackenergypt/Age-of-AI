@@ -145,7 +145,77 @@ class World {
     return this.terrainSystem.getTerrainData(this.terrainGrid, this.width, this.height);
   }
 
-  // ... outros métodos necessários
+  // Método para obter posição inicial aleatória
+  getRandomStartPosition() {
+    return {
+      x: Math.floor(Math.random() * this.width),
+      y: Math.floor(Math.random() * this.height)
+    };
+  }
+  
+  // Método para adicionar entidade
+  addEntity(entity) {
+    this.entities.set(entity.id, entity);
+  }
+  
+  // Método para remover entidades por proprietário
+  removeEntitiesByOwner(ownerId) {
+    for (const [id, entity] of this.entities.entries()) {
+      if (entity.ownerId === ownerId) {
+        this.entities.delete(id);
+      }
+    }
+  }
+  
+  // Método para mover unidades
+  moveUnits(unitIds, targetX, targetY, playerId) {
+    unitIds.forEach(unitId => {
+      const unit = this.entities.get(unitId);
+      if (unit && unit.ownerId === playerId) {
+        unit.moveTo(targetX, targetY);
+      }
+    });
+  }
+  
+  // Método para coletar recursos
+  gatherResource(unitIds, resourceId, playerId) {
+    const resource = this.resources.get(resourceId);
+    if (!resource) return;
+    
+    unitIds.forEach(unitId => {
+      const unit = this.entities.get(unitId);
+      if (unit && unit.ownerId === playerId) {
+        unit.gatherResource(resource);
+      }
+    });
+  }
+  
+  // Método para construir estrutura
+  buildStructure(unitIds, buildingType, x, y, playerId, player) {
+    // Implementar lógica de construção
+    console.log(`Construindo ${buildingType} em (${x}, ${y}) para jogador ${playerId}`);
+  }
+  
+  // Método para treinar unidade
+  trainUnit(buildingId, unitType, playerId, player) {
+    const building = this.entities.get(buildingId);
+    if (building && building.ownerId === playerId) {
+      building.trainUnit(unitType);
+    }
+  }
+  
+  // Método para atacar entidade
+  attackEntity(unitIds, targetId, playerId) {
+    const target = this.entities.get(targetId);
+    if (!target) return;
+    
+    unitIds.forEach(unitId => {
+      const unit = this.entities.get(unitId);
+      if (unit && unit.ownerId === playerId) {
+        unit.attack(target);
+      }
+    });
+  }
 }
 
 module.exports = World;

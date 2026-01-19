@@ -60,10 +60,13 @@ class WebSocketServer {
     });
   }
   
-  handleMessage(ws, message) {
+  handleMessage(ws, rawMessage) {
     const client = this.clients.get(ws);
     
     try {
+      // Parse a mensagem JSON
+      const message = JSON.parse(rawMessage.toString());
+      
       switch (message.type) {
         case 'join_game':
           const playerName = message.data.playerName;
