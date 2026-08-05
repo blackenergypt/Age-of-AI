@@ -1036,7 +1036,8 @@ class GameClient {
     }
     
     handleCameraMovement(deltaTime) {
-        const moveSpeed = 0.5 * deltaTime * 1000;
+        const speedSetting = (window.__AGE_GAME_SETTINGS__ && window.__AGE_GAME_SETTINGS__.cameraSpeed) || 5;
+        const moveSpeed = 0.5 * deltaTime * 1000 * (speedSetting / 5);
         
         if (this.inputHandler.isKeyDown('w') || this.inputHandler.isKeyDown('ArrowUp')) {
             this.renderer.camera.y -= moveSpeed;

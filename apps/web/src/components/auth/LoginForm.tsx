@@ -83,15 +83,20 @@ export function LoginForm() {
           onChange={setPassword}
         />
 
-        <div className="auth-field auth-check">
-          <input
-            id="rememberMe"
-            name="rememberMe"
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-          />
-          <label htmlFor="rememberMe">Lembrar-me neste dispositivo</label>
+        <div className="auth-meta">
+          <div className="auth-check">
+            <input
+              id="rememberMe"
+              name="rememberMe"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <label htmlFor="rememberMe">Lembrar-me</label>
+          </div>
+          <Link href={ROUTES.forgotPassword} className="auth-meta-link">
+            Esqueceste a senha?
+          </Link>
         </div>
 
         <div className="auth-field">
@@ -100,14 +105,9 @@ export function LoginForm() {
           </button>
         </div>
 
-        <div className="auth-links">
-          <p>
-            <Link href={ROUTES.forgotPassword}>Esqueceste a senha?</Link>
-          </p>
-          <p>
-            Ainda sem conta? <Link href={ROUTES.register}>Criar conta</Link>
-          </p>
-        </div>
+        <p className="auth-footer-line">
+          Ainda sem conta? <Link href={ROUTES.register}>Criar conta</Link>
+        </p>
       </form>
       <SocialLogin mode="login" />
     </>

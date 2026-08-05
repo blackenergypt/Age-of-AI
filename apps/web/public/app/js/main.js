@@ -24,14 +24,32 @@ function bootAgeOfAiGame() {
     console.log('Usuário autenticado:', userData.email || userData.nickname || userData.name);
 
     const backgroundMusic = document.getElementById('background-music');
-    if (backgroundMusic) {
-        const savedSettings = localStorage.getItem('gameSettings');
-        if (savedSettings) {
-            const settings = JSON.parse(savedSettings);
-            backgroundMusic.volume = (settings.musicVolume || 30) / 100;
-        } else {
-            backgroundMusic.volume = 0.3;
+    function readGameSettings() {
+        try {
+            const raw = localStorage.getItem('gameSettings');
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            return {};
         }
+    }
+
+    const gameSettings = readGameSettings();
+    if (backgroundMusic) {
+        backgroundMusic.volume = (gameSettings.musicVolume ?? 30) / 100;
+    }
+    window.__AGE_GAME_SETTINGS__ = {
+        musicVolume: gameSettings.musicVolume ?? 30,
+        sfxVolume: gameSettings.sfxVolume ?? 50,
+        graphicsQuality: gameSettings.graphicsQuality || 'medium',
+        showFps: gameSettings.showFps !== false,
+        enableShadows: !!gameSettings.enableShadows,
+        showTutorials: gameSettings.showTutorials !== false,
+        autoSave: gameSettings.autoSave !== false,
+        cameraSpeed: gameSettings.cameraSpeed ?? 5,
+        muteInBackground: gameSettings.muteInBackground !== false
+    };
+    if (window.CONFIG && window.CONFIG.ui) {
+        window.CONFIG.ui.showTutorials = window.__AGE_GAME_SETTINGS__.showTutorials;
     }
 
     if (typeof GameClient === 'undefined') {

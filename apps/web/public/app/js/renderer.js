@@ -87,7 +87,14 @@ class Renderer {
             // Criar renderer
             this.renderer3D = new THREE.WebGLRenderer({ antialias: true });
             this.renderer3D.setSize(window.innerWidth, window.innerHeight);
-            this.renderer3D.shadowMap.enabled = true;
+            const quality = (window.__AGE_GAME_SETTINGS__ && window.__AGE_GAME_SETTINGS__.graphicsQuality) || 'medium';
+            const pixelRatio =
+                quality === 'high' ? Math.min(window.devicePixelRatio || 1, 2) :
+                quality === 'low' ? 0.75 :
+                Math.min(window.devicePixelRatio || 1, 1.5);
+            this.renderer3D.setPixelRatio(pixelRatio);
+            const shadowsEnabled = !!(window.__AGE_GAME_SETTINGS__ && window.__AGE_GAME_SETTINGS__.enableShadows);
+            this.renderer3D.shadowMap.enabled = shadowsEnabled;
             this.renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
             document.body.appendChild(this.renderer3D.domElement);
             
@@ -97,9 +104,10 @@ class Renderer {
             
             const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
             directionalLight.position.set(500, 800, 500);
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 2048;
-            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.castShadow = shadowsEnabled;
+            const shadowSize = quality === 'high' ? 2048 : quality === 'low' ? 512 : 1024;
+            directionalLight.shadow.mapSize.width = shadowSize;
+            directionalLight.shadow.mapSize.height = shadowSize;
             this.scene.add(directionalLight);
             
             // Configurar raycaster para interação
@@ -800,8 +808,13 @@ class Renderer {
         ctx.fillStyle = 'white';
         ctx.font = '16px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`FPS: ${Math.round(gameState.fps || 0)}`, 10, 30);
-        ctx.fillText(`Jogadores: ${gameState.playerCount || 0}`, 10, 60);
+        const showFps = !window.__AGE_GAME_SETTINGS__ || window.__AGE_GAME_SETTINGS__.showFps !== false;
+        let y = 30;
+        if (showFps) {
+            ctx.fillText(`FPS: ${Math.round(gameState.fps || 0)}`, 10, y);
+            y += 30;
+        }
+        ctx.fillText(`Jogadores: ${gameState.playerCount || 0}`, 10, y);
         this.drawMinimap(gameState);
         ctx.restore();
     }

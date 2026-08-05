@@ -107,33 +107,34 @@ export function RegisterForm() {
           </div>
         </div>
 
-        <div className="auth-field">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="o teu email"
-          />
-        </div>
-
-        <div className="auth-field">
-          <label htmlFor="phone">
-            Telefone <span className="optional">(opcional)</span>
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+351…"
-          />
+        <div className="auth-row">
+          <div className="auth-field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="o teu email"
+            />
+          </div>
+          <div className="auth-field">
+            <label htmlFor="phone">
+              Telefone <span className="optional">(opcional)</span>
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+351…"
+            />
+          </div>
         </div>
 
         <div className="auth-row">
