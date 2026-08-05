@@ -1117,39 +1117,34 @@ class GameClient {
 
     // Adicionar botão para alternar entre modos 2D e 3D
     addToggle3DButton() {
-        const button = document.createElement('button');
-        button.textContent = 'Alternar 3D';
-        button.style.position = 'absolute';
-        button.style.top = '10px';
-        button.style.right = '10px';
-        button.style.zIndex = '1000';
-        button.style.padding = '8px 12px';
-        button.style.backgroundColor = '#4CAF50';
-        button.style.color = 'white';
-        button.style.border = 'none';
-        button.style.borderRadius = '4px';
-        button.style.cursor = 'pointer';
-        
+        const button = document.getElementById('toggle-3d-btn');
+        if (!button) return;
+
+        const label = button.querySelector('span');
+        const setLabel = (text) => {
+            if (label) label.textContent = text;
+            else button.textContent = text;
+        };
+
+        setLabel(this.renderer.use3D ? 'Mudar para 2D' : 'Alternar 3D');
+
         button.addEventListener('click', () => {
             this.renderer.use3D = !this.renderer.use3D;
-            
-            // Mostrar/ocultar o canvas de acordo com o modo
+
             if (this.renderer.use3D) {
                 this.renderer.canvas.style.display = 'none';
                 if (this.renderer.renderer3D) {
                     this.renderer.renderer3D.domElement.style.display = 'block';
                 }
-                button.textContent = 'Mudar para 2D';
+                setLabel('Mudar para 2D');
             } else {
                 this.renderer.canvas.style.display = 'block';
                 if (this.renderer.renderer3D) {
                     this.renderer.renderer3D.domElement.style.display = 'none';
                 }
-                button.textContent = 'Mudar para 3D';
+                setLabel('Alternar 3D');
             }
         });
-        
-        document.body.appendChild(button);
     }
 }
 

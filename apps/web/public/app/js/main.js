@@ -250,6 +250,15 @@ function bootAgeOfAiGame() {
         });
     }
 
+    const collectStoneButton = document.getElementById('collect-stone');
+    if (collectStoneButton) {
+        collectStoneButton.addEventListener('click', () => {
+            if (window.gameClient) {
+                window.gameClient.collectResource('stone');
+            }
+        });
+    }
+
     const buildHouseButton = document.getElementById('build-house');
     if (buildHouseButton) {
         buildHouseButton.addEventListener('click', () => {

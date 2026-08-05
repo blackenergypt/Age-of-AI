@@ -96,7 +96,8 @@ class Renderer {
             const shadowsEnabled = !!(window.__AGE_GAME_SETTINGS__ && window.__AGE_GAME_SETTINGS__.enableShadows);
             this.renderer3D.shadowMap.enabled = shadowsEnabled;
             this.renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
-            document.body.appendChild(this.renderer3D.domElement);
+            const threeHost = document.getElementById('three-js-container') || document.body;
+            threeHost.appendChild(this.renderer3D.domElement);
             
             // Configurar iluminação
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);

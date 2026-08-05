@@ -169,36 +169,35 @@ class UIManager {
     }
     
     updateActionButtons(actions) {
-        // Limpar botões existentes
+        if (!this.actionButtons) return;
         this.actionButtons.innerHTML = '';
-        
-        // Adicionar novos botões
-        actions.forEach(action => {
+
+        (actions || []).forEach(action => {
             const button = document.createElement('button');
+            button.type = 'button';
             button.className = 'action-button';
             button.dataset.action = action.id;
-            
+
             if (action.icon) {
-                button.innerHTML = `<img src="images/${action.icon}" alt="${action.name}">`;
+                const img = document.createElement('img');
+                img.src = (window.AGE_ASSET_BASE || '/app') + '/images/' + action.icon;
+                img.alt = action.name || '';
+                button.appendChild(img);
             } else {
                 button.textContent = action.name;
             }
-            
-            if (action.tooltip) {
-                button.title = action.tooltip;
-            }
-            
+
+            if (action.tooltip) button.title = action.tooltip;
+
             if (action.disabled) {
                 button.disabled = true;
                 button.classList.add('disabled');
             }
-            
+
             button.addEventListener('click', () => {
-                if (!action.disabled) {
-                    this.gameClient.performAction(action.id);
-                }
+                if (!action.disabled) this.gameClient.performAction(action.id);
             });
-            
+
             this.actionButtons.appendChild(button);
         });
     }

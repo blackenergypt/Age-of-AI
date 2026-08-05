@@ -2,6 +2,16 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faComments,
+  faCube,
+  faHouse,
+  faStore,
+  faTree,
+  faMountain,
+  faWheatAwn
+} from '@fortawesome/free-solid-svg-icons';
 import { RequireAuth } from '@/components/app/RequireAuth';
 import { APP_MENU_PATH, APP_STORE_PATH, appAsset, ROUTES } from '@/lib/app-paths';
 import '@/components/app/game-page.css';
@@ -18,7 +28,7 @@ const SCRIPT_CHAIN = [
   '/app/js/main.js'
 ];
 
-const STYLE_HREFS = ['/app/css/main.css', '/app/css/game.css'];
+const STYLE_HREFS = ['/app/css/main.css'];
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -114,67 +124,105 @@ function GameBoot() {
 
   return (
     <div className="game-page">
-      <Link href={APP_MENU_PATH} className="game-exit">
-        Menu
-      </Link>
-
       <div id="game-container">
+        <div id="three-js-container" aria-hidden="true" />
         <canvas id="game-canvas" />
 
         <div id="game-ui">
-          <div id="resources-panel">
-            <div className="resource">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={appAsset('/images/icons/wheat.png')} alt="Comida" />
-              <span id="food-count">0</span>
+          <header className="hud-top">
+            <div className="hud-top-left">
+              <Link href={APP_MENU_PATH} className="game-exit" id="game-menu-link">
+                Menu
+              </Link>
+              <p className="hud-brand">Age of AI</p>
             </div>
-            <div className="resource">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={appAsset('/images/icons/log.png')} alt="Madeira" />
-              <span id="wood-count">0</span>
-              <button type="button" id="collect-wood">
-                Coletar Madeira
+
+            <div id="resources-panel" className="hud-resources">
+              <div className="resource" data-resource="food">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={appAsset('/images/icons/wheat.png')} alt="" />
+                <div className="resource-meta">
+                  <span className="resource-label">Comida</span>
+                  <span id="food-count">0</span>
+                </div>
+              </div>
+              <div className="resource" data-resource="wood">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={appAsset('/images/icons/log.png')} alt="" />
+                <div className="resource-meta">
+                  <span className="resource-label">Madeira</span>
+                  <span id="wood-count">0</span>
+                </div>
+                <button type="button" id="collect-wood" className="resource-action" title="Coletar madeira">
+                  <FontAwesomeIcon icon={faTree} aria-hidden />
+                  <span>Coletar</span>
+                </button>
+              </div>
+              <div className="resource" data-resource="stone">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={appAsset('/images/icons/granite.png')} alt="" />
+                <div className="resource-meta">
+                  <span className="resource-label">Pedra</span>
+                  <span id="stone-count">0</span>
+                </div>
+                <button type="button" id="collect-stone" className="resource-action" title="Coletar pedra">
+                  <FontAwesomeIcon icon={faMountain} aria-hidden />
+                  <span>Coletar</span>
+                </button>
+              </div>
+              <div className="resource" data-resource="gold">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={appAsset('/images/icons/gold.png')} alt="" />
+                <div className="resource-meta">
+                  <span className="resource-label">Ouro</span>
+                  <span id="gold-count">0</span>
+                </div>
+              </div>
+              <button type="button" id="build-house" className="hud-build" title="Construir casa">
+                <FontAwesomeIcon icon={faHouse} aria-hidden />
+                <span>Construir casa</span>
               </button>
             </div>
-            <div className="resource">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={appAsset('/images/icons/granite.png')} alt="Pedra" />
-              <span id="stone-count">0</span>
-              <button type="button" id="collect-stone">
-                Coletar Pedra
+
+            <div className="hud-top-right">
+              <button type="button" id="toggle-3d-btn" className="hud-chip">
+                <FontAwesomeIcon icon={faCube} aria-hidden />
+                <span>Alternar 3D</span>
               </button>
             </div>
-            <div className="resource">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={appAsset('/images/icons/gold.png')} alt="Ouro" />
-              <span id="gold-count">0</span>
+          </header>
+
+          <aside id="chat-panel" className="hud-chat">
+            <div className="hud-panel-head">
+              <FontAwesomeIcon icon={faComments} aria-hidden />
+              <span>Chat</span>
             </div>
-            <button type="button" id="build-house">
-              Construir Casa
-            </button>
-          </div>
-
-          <div id="minimap">
-            <canvas id="minimap-canvas" />
-          </div>
-
-          <div id="action-panel">
-            <h3>Ações</h3>
-            <div id="action-buttons">
-              <button type="button" id="open-store" className="btn">
-                Abrir Loja
-              </button>
-            </div>
-          </div>
-
-          <div id="chat-panel">
             <div id="chat-messages" />
             <div id="chat-input-container">
-              <input type="text" id="chat-input" placeholder="Digite sua mensagem..." />
+              <input type="text" id="chat-input" placeholder="Escreve uma mensagem…" autoComplete="off" />
               <button type="button" id="chat-send">
                 Enviar
               </button>
             </div>
+          </aside>
+
+          <div id="action-panel" className="hud-actions">
+            <div className="hud-panel-head">
+              <FontAwesomeIcon icon={faWheatAwn} aria-hidden />
+              <span>Ações</span>
+            </div>
+            <div className="hud-actions-row">
+              <button type="button" id="open-store" className="hud-store">
+                <FontAwesomeIcon icon={faStore} aria-hidden />
+                <span>Loja</span>
+              </button>
+              <div id="action-buttons" className="hud-dynamic-actions" />
+            </div>
+          </div>
+
+          <div id="minimap" className="hud-minimap">
+            <span className="hud-minimap-label">Mapa</span>
+            <canvas id="minimap-canvas" />
           </div>
 
           <div id="notification-area" />
@@ -183,6 +231,7 @@ function GameBoot() {
 
       <div id="loading-screen">
         <div className="loader" />
+        <p className="hud-loading-brand">Age of AI</p>
         <p>{error || status}</p>
         {error ? (
           <Link href={APP_MENU_PATH} className="game-back-link">
