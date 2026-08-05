@@ -1,68 +1,63 @@
-// Sistema de autenticação final - solução para o problema de redirecionamento
 console.log('Auth final solution loaded');
 
-// Função para verificar se o usuário está autenticado
+function go(path) {
+  const target = typeof window.agePath === 'function' ? window.agePath(path) : path;
+  window.location.href = target;
+}
+
+function normalizePath(pathname) {
+  const base = (window.AGE_BASE_PATH || '').replace(/\/$/, '');
+  if (base && pathname.startsWith(base)) {
+    return pathname.slice(base.length) || '/';
+  }
+  if (pathname.startsWith('/app/')) {
+    return pathname.slice(4) || '/';
+  }
+  return pathname;
+}
+
 function isUserAuthenticated() {
-    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    return !!token; // Retorna true se o token existir, false caso contrário
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  return !!token;
 }
 
-// Função para obter o usuário atual
 function getCurrentUser() {
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    if (!userStr) return null;
-    
-    try {
-        return JSON.parse(userStr);
-    } catch (e) {
-        console.error('Erro ao analisar dados do usuário:', e);
-        return null;
-    }
+  const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+  if (!userStr) return null;
+
+  try {
+    return JSON.parse(userStr);
+  } catch (e) {
+    console.error('Erro ao analisar dados do usuário:', e);
+    return null;
+  }
 }
 
-// Função para fazer logout
 function logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('user');
-    window.location.href = '/login';
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  sessionStorage.removeItem('authToken');
+  sessionStorage.removeItem('user');
+  go('/login');
 }
 
-// Expor funções globalmente
 window.Auth = {
-    isAuthenticated: isUserAuthenticated,
-    getUser: getCurrentUser,
-    logout: logout
+  isAuthenticated: isUserAuthenticated,
+  getUser: getCurrentUser,
+  logout: logout
 };
 
-// Verificar a página atual e redirecionar se necessário
-(function() {
-    const currentPath = window.location.pathname;
-    const isAuthenticated = isUserAuthenticated();
-    
-    console.log('Current path:', currentPath);
-    console.log('Is authenticated:', isAuthenticated);
-    
-    // Páginas que requerem autenticação
-    const protectedPages = ['/menu', '/game'];
-    
-    // Páginas de autenticação
-    const authPages = ['/login', '/register'];
-    
-    // Se estiver em uma página protegida e não estiver autenticado
-    if (protectedPages.some(page => currentPath === page || currentPath.endsWith(page + '.html'))) {
-        if (!isAuthenticated) {
-            console.log('Redirecionando para login - acesso não autorizado');
-            window.location.href = '/login';
-        }
-    }
-    
-    // Se estiver em uma página de autenticação e já estiver autenticado
-    if (authPages.some(page => currentPath === page || currentPath.endsWith(page + '.html'))) {
-        if (isAuthenticated) {
-            console.log('Redirecionando para menu - já autenticado');
-            window.location.href = '/menu';
-        }
-    }
-})(); 
+(function () {
+  const currentPath = normalizePath(window.location.pathname);
+  const isAuthenticated = isUserAuthenticated();
+  const protectedPages = ['/menu', '/game', '/store'];
+  const authPages = ['/login', '/register'];
+
+  if (protectedPages.some((page) => currentPath === page || currentPath.endsWith(page + '.html'))) {
+    if (!isAuthenticated) go('/login');
+  }
+
+  if (authPages.some((page) => currentPath === page || window.location.pathname === page)) {
+    if (isAuthenticated) go('/menu');
+  }
+})();

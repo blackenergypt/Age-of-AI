@@ -58,6 +58,15 @@ const config = {
   redis: {
     url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   },
+  gateway: {
+    // Se definido, reescreve wsUrl dos nós para o path público do nginx
+    // ex: http://localhost → ws://localhost/gs/{nodeId}
+    publicOrigin: process.env.PUBLIC_GATEWAY_ORIGIN || '',
+  },
+  frontend: {
+    // Origem do site (landing + auth). Usado em redirects OAuth / email.
+    url: (process.env.FRONTEND_URL || process.env.PUBLIC_GATEWAY_ORIGIN || 'http://localhost').replace(/\/$/, ''),
+  },
 };
 
 module.exports = config;

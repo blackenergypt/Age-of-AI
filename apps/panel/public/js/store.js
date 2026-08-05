@@ -39,6 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fechar loja
     closeStoreButton.addEventListener('click', () => {
-        window.location.href = '/menu'; // Redirecionar para o menu
+        window.location.href = (typeof agePath==='function'?agePath('/menu'):'/menu'); // Redirecionar para o menu
     });
 }); 

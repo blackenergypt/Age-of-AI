@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Página do menu carregada');
     
     // Verificar se o usuário está autenticado
-    const token = localStorage.getItem('authToken');
-    const userStr = localStorage.getItem('user');
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
     
     if (!token || !userStr) {
         // Redirecionar para a página de login se não estiver autenticado
-        window.location.href = '/login';
+        window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
         return;
     }
     
@@ -44,9 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Limpar dados de autenticação
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');
+                sessionStorage.removeItem('authToken');
+                sessionStorage.removeItem('user');
                 
                 // Redirecionar para a página inicial
-                window.location.href = '/';
+                window.location.href = (typeof agePath==='function'?agePath('/'):'/');
             });
         }
     } catch (error) {
@@ -287,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (playOnlineBtn) {
         playOnlineBtn.addEventListener('click', function() {
             console.log('Iniciando jogo online (lobby público)...');
-            window.location.href = '/game';
+            window.location.href = (typeof agePath==='function'?agePath('/game'):'/game');
         });
     }
 
@@ -310,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             if (password) params.set('password', password);
 
-            window.location.href = `/game?${params.toString()}`;
+            window.location.href = `${typeof agePath==='function'?agePath('/game'):'/game'}?${params.toString()}`;
         });
     }
 
@@ -328,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams({ match: code.toUpperCase() });
             if (password) params.set('password', password);
 
-            window.location.href = `/game?${params.toString()}`;
+            window.location.href = `${typeof agePath==='function'?agePath('/game'):'/game'}?${params.toString()}`;
         });
     }
 

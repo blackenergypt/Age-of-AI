@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     if (!token) {
-        window.location.href = '/login';
+        window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
         return;
     }
 
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erro ao analisar dados do usuário:', e);
         localStorage.removeItem('user');
         sessionStorage.removeItem('user');
-        window.location.href = '/login';
+        window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
         return;
     }
 

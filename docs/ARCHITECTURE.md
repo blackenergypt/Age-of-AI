@@ -76,11 +76,13 @@ Duplicar game-server = copiar a mesma imagem Docker. Sem lógica especial por n�
 ## Stack prática
 
 - **Monorepo**: `pnpm` workspaces
-- **API**: Express/Fastify + MongoDB
+- **API**: Express + MongoDB
 - **Game Server**: Node + `ws`
+- **Web (landing)**: **Next.js 16** (App Router) em `apps/web`
+- **Panel**: Express static (menu + jogo)
 - **Redis**: matchmaking, sessões, presença, pub/sub entre nós
 - **MongoDB**: users, inventário, snapshots de partida
-- **Nginx**: `/` → web, `/app` → panel, `/api` → api, `/ws` → game nodes
+- **Nginx**: `/` → web, `/app` → panel, `/api` → api, `/gs/*` → game nodes
 - **Docker Compose** agora; Kubernetes só quando necessário
 
 ## Ordem de migração
@@ -133,11 +135,13 @@ Fluxo cliente:
 2. Abrir WebSocket em `wsUrl`
 3. Enviar `join_game` / `create_match` / `join_match` conforme `action`
 
+O **panel** (`apps/panel`) faz este fluxo em `js/matchmaking.js` + `main.js` ao abrir `/game`.
+
 Dev com 2 nós:
 
 ```bash
 # infra
-docker compose up -d redis mongo
+docker compose up -d redis mongodb
 
 # terminais separados
 pnpm dev:api
@@ -146,6 +150,30 @@ pnpm dev:game:2                  # :3003, GAME_NODE_ID=gs-2
 ```
 
 Se Redis estiver offline, a API cai no fallback single-node (`GAME_SERVER_WS_URL`).
+
+## Gateway Nginx (um domínio)
+
+```bash
+pnpm infra:up                    # mongo + redis + nginx :80
+pnpm dev:web                     # :8080
+pnpm dev:panel                   # :8081
+pnpm dev:api                     # :3001
+pnpm dev:gateway:game            # regista ws://localhost/gs/gs-1
+# opcional: pnpm dev:gateway:game:2
+```
+
+| Path | Destino |
+|------|---------|
+| `http://localhost/` | web (landing) |
+| `http://localhost/login` | auth (login) |
+| `http://localhost/register` | auth (registo) |
+| `http://localhost/auth/success` | OAuth callback UI |
+| `http://localhost/app/menu` | panel (jogo) |
+| `http://localhost/api/` | API |
+| `ws://localhost/gs/gs-1` | game-server 1 |
+| `ws://localhost/gs/gs-2` | game-server 2 |
+
+Auth fica na **raiz** (como na maioria dos produtos). O jogo fica sob `/app/*`.
 
 ## Princípio operacional
 

@@ -1,7 +1,9 @@
 // Configurações do jogo
 const CONFIG = {
     api: {
-        baseUrl: window.AGE_API_URL || 'http://localhost:3001'
+        baseUrl: (typeof window.getApiBase === 'function' ? window.getApiBase() : null)
+            || window.AGE_API_URL
+            || 'http://localhost:3001'
     },
 
     // Configurações gerais
@@ -14,7 +16,9 @@ const CONFIG = {
     
     // Configurações do servidor (fallback se matchmaking falhar)
     server: {
-        url: window.AGE_GAME_WS_URL || (window.location.hostname === 'localhost' ? 'ws://localhost:3002' : 'wss://' + window.location.host),
+        url: window.AGE_GAME_WS_URL || (window.location.hostname === 'localhost' && window.location.port
+            ? 'ws://localhost:3002'
+            : `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/gs/gs-1`),
         reconnectInterval: 3000,
         maxReconnectAttempts: 5
     },

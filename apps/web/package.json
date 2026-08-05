@@ -1,15 +1,22 @@
 {
   "name": "@age-of-ai/web",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development nodemon server.js"
+    "dev": "next dev -p ${WEB_PORT:-8080}",
+    "build": "next build",
+    "start": "next start -p ${WEB_PORT:-8080}",
+    "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.22.1"
+    "next": "^16.3.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0"
   }
 }

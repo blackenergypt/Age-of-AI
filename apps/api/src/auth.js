@@ -220,7 +220,7 @@ router.get('/confirm/:token', async (req, res) => {
         await user.save();
 
         // Redirect to success page
-        res.redirect('/login.html?confirmed=true');
+        res.redirect(`${config.frontend.url}/login?confirmed=true`);
     } catch (error) {
         console.error('Erro na confirmação:', error);
         res.status(500).json({ message: 'Erro no servidor', error: error.message });
@@ -293,11 +293,11 @@ router.get('/discord', (req, res, next) => {
 router.get('/discord/callback', (req, res, next) => {
     console.log('Callback do Discord recebido');
     passport.authenticate('discord', { 
-        failureRedirect: '/failure.html'
+        failureRedirect: `${config.frontend.url}/auth/failure`
     })(req, res, (err) => {
         if (err) {
             console.error('Erro na autenticação do Discord:', err);
-            return res.redirect('/failure.html');
+            return res.redirect(`${config.frontend.url}/auth/failure`);
         }
         
         // Criar token JWT para o usuário autenticado
@@ -320,7 +320,7 @@ router.get('/discord/callback', (req, res, next) => {
         };
         
         // Redirecionar para uma página que armazenará o token e redirecionará para o menu
-        res.redirect(`/auth-success.html?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`);
+        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`);
     });
 });
 
@@ -328,7 +328,7 @@ router.get('/discord/callback', (req, res, next) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', 
     passport.authenticate('google', { 
-        failureRedirect: '/failure.html' 
+        failureRedirect: `${config.frontend.url}/auth/failure` 
     }),
     (req, res) => {
         const token = jwt.sign(
@@ -336,14 +336,14 @@ router.get('/google/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`/auth-success.html?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
     }
 );
 
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 router.get('/facebook/callback', 
     passport.authenticate('facebook', { 
-        failureRedirect: '/failure.html' 
+        failureRedirect: `${config.frontend.url}/auth/failure` 
     }),
     (req, res) => {
         const token = jwt.sign(
@@ -351,14 +351,14 @@ router.get('/facebook/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`/auth-success.html?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
     }
 );
 
 router.get('/twitter', passport.authenticate('twitter'));
 router.get('/twitter/callback', 
     passport.authenticate('twitter', { 
-        failureRedirect: '/failure.html' 
+        failureRedirect: `${config.frontend.url}/auth/failure` 
     }),
     (req, res) => {
         const token = jwt.sign(
@@ -366,7 +366,7 @@ router.get('/twitter/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`/auth-success.html?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
     }
 );
 

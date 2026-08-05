@@ -76,7 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchGameStats() {
         try {
-            const response = await fetch((window.AGE_API_URL || 'http://localhost:3001') + '/api/stats');
+            const apiBase = window.AGE_API_URL
+                || (window.location.port === '80' || !window.location.port ? '' : 'http://localhost:3001');
+            const response = await fetch(`${apiBase}/api/stats`);
             if (!response.ok) throw new Error('Network response was not ok');
 
             const stats = await response.json();

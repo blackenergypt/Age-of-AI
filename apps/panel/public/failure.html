@@ -1,13 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Failed</title>
+    <title>Falha na autenticação — Age of AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script src="runtime-config.js"></script>
+    <script src="js/paths.js"></script>
 </head>
-<body>
-    <h1>Login Failed</h1>
-    <p>There was an error logging in. Please try again.</p>
-    <a href="/login">Go back to Login</a>
+<body class="auth-page">
+    <div id="game-container">
+        <div id="background-image" aria-hidden="true"></div>
+        <div class="screen">
+            <div class="auth-shell">
+                <div class="auth-brand-bar">
+                    <a href="/">Age of AI</a>
+                </div>
+                <div class="auth-container">
+                    <div class="auth-header">
+                        <h1 class="game-title">Age of AI</h1>
+                        <p class="tagline">Não foi possível autenticar</p>
+                    </div>
+                    <p class="auth-failure-copy">Algo correu mal no login social. Tenta de novo ou usa email e senha.</p>
+                    <div class="form-group" style="margin-top:1.5rem">
+                        <a href="/login" class="primary-button auth-submit" style="display:block;text-align:center;text-decoration:none">Voltar ao login</a>
+                    </div>
+                    <div class="back-to-home">
+                        <a href="/" class="secondary-button">Voltar à página inicial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .auth-failure-copy {
+            margin: 0;
+            color: var(--cream-dim);
+            font-size: 0.95rem;
+            line-height: 1.55;
+            text-align: center;
+        }
+    </style>
 </body>
-</html> 
+</html>

@@ -31,7 +31,25 @@ function authRequired(req, res, next) {
 async function getLiveNodes() {
   const redis = await tryRedis(config.redis.url);
   if (!redis) return [];
-  return listNodes(redis);
+  const nodes = await listNodes(redis);
+  return nodes.map(withPublicWs);
+}
+
+function withPublicWs(node) {
+  if (!node) return node;
+  const origin = config.gateway?.publicOrigin;
+  if (!origin || !node.nodeId || node.nodeId === 'fallback') return node;
+
+  try {
+    const u = new URL(origin);
+    const wsProto = u.protocol === 'https:' ? 'wss:' : 'ws:';
+    return {
+      ...node,
+      wsUrl: `${wsProto}//${u.host}/gs/${node.nodeId}`
+    };
+  } catch (_) {
+    return node;
+  }
 }
 
 function fallbackNode() {

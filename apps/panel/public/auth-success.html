@@ -3,104 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autenticação bem-sucedida - Age of AI</title>
+    <title>Autenticação — Age of AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script src="runtime-config.js"></script>
+    <script src="js/paths.js"></script>
+</head>
+<body class="auth-page">
+    <div id="game-container">
+        <div id="background-image" aria-hidden="true"></div>
+        <div class="screen">
+            <div class="auth-shell">
+                <div class="auth-brand-bar">
+                    <a href="/">Age of AI</a>
+                </div>
+                <div class="auth-container" style="text-align:center">
+                    <div class="auth-header" style="text-align:center">
+                        <h1 class="game-title">Age of AI</h1>
+                        <p class="tagline" id="message">A concluir autenticação…</p>
+                    </div>
+                    <div class="auth-loader" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 500px;
-        }
-        h1 {
-            color: #ffcc00;
-        }
-        .loading {
-            margin: 20px 0;
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 204, 0, 0.3);
+        .auth-loader {
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 1.5rem auto 0;
+            border: 2px solid rgba(212, 180, 90, 0.25);
+            border-top-color: var(--gold);
             border-radius: 50%;
-            border-top-color: #ffcc00;
-            animation: spin 1s ease-in-out infinite;
+            animation: auth-spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes auth-spin { to { transform: rotate(360deg); } }
     </style>
     <script>
-        // Função para obter parâmetros da URL
         function getUrlParams() {
             const params = {};
             const queryString = window.location.search.substring(1);
-            const pairs = queryString.split('&');
-            
-            for (let i = 0; i < pairs.length; i++) {
-                const pair = pairs[i].split('=');
-                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-            }
-            
+            queryString.split('&').forEach((pair) => {
+                const [k, v] = pair.split('=');
+                if (k) params[decodeURIComponent(k)] = decodeURIComponent(v || '');
+            });
             return params;
         }
-        
-        // Processar autenticação quando a página carregar
-        window.onload = function() {
+
+        window.onload = function () {
             const params = getUrlParams();
-            const token = params.token;
-            const userStr = params.user;
-            
-            console.log('Token recebido:', token);
-            console.log('Dados do usuário recebidos:', userStr);
-            
-            if (token && userStr) {
+            const message = document.getElementById('message');
+            const go = (path) => {
+                window.location.href = typeof agePath === 'function' ? agePath(path) : path;
+            };
+
+            if (params.token && params.user) {
                 try {
-                    // Armazenar token e dados do usuário
-                    localStorage.setItem('authToken', token);
-                    localStorage.setItem('user', userStr);
-                    
-                    // Exibir mensagem de sucesso
-                    document.getElementById('message').textContent = 'Autenticação bem-sucedida! Redirecionando...';
-                    
-                    // Redirecionar para o menu após um breve atraso
-                    setTimeout(() => {
-                        window.location.href = '/menu';
-                    }, 1500);
+                    localStorage.setItem('authToken', params.token);
+                    localStorage.setItem('user', params.user);
+                    message.textContent = 'Autenticação concluída. A redirecionar…';
+                    setTimeout(() => go('/menu'), 1200);
                 } catch (error) {
-                    console.error('Erro ao processar autenticação:', error);
-                    document.getElementById('message').textContent = 'Ocorreu um erro durante a autenticação. Por favor, tente novamente.';
-                    
-                    // Redirecionar para a página de login após um breve atraso
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 3000);
+                    console.error(error);
+                    message.textContent = 'Erro ao guardar a sessão.';
+                    setTimeout(() => { window.location.href = '/login'; }, 2500);
                 }
             } else {
-                document.getElementById('message').textContent = 'Dados de autenticação inválidos. Por favor, tente novamente.';
-                
-                // Redirecionar para a página de login após um breve atraso
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 3000);
+                message.textContent = 'Dados de autenticação inválidos.';
+                setTimeout(() => { window.location.href = '/login'; }, 2500);
             }
         };
     </script>
-</head>
-<body>
-    <div class="container">
-        <h1>Autenticação</h1>
-        <div class="loading"></div>
-        <p id="message">Processando autenticação...</p>
-    </div>
 </body>
-</html> 
+</html>

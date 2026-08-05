@@ -1,4 +1,11 @@
-const API_BASE = (window.CONFIG && CONFIG.api && CONFIG.api.baseUrl) || 'http://localhost:3001';
+function resolveApiBase() {
+  if (typeof window.getApiBase === 'function') return window.getApiBase();
+  if (typeof window.AGE_API_URL === 'string') return window.AGE_API_URL;
+  if (window.CONFIG && CONFIG.api && typeof CONFIG.api.baseUrl === 'string') return CONFIG.api.baseUrl;
+  return 'http://localhost:3001';
+}
+
+const API_BASE = resolveApiBase();
 class Auth {
     constructor() {
         this.currentUser = null;
@@ -301,14 +308,14 @@ class Auth {
         this.updateUIForLoggedOutUser();
         
         // Redirecionar para a página inicial
-        window.location.href = '/';
+        window.location.href = (typeof agePath==='function'?agePath('/'):'/');
     }
 
     // Função para fazer login
     login(email, password, rememberMe) {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await fetch(`${API_BASE}/api/auth/login', {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -366,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageElement.className = 'auth-message';
                 messageElement.style.display = 'block';
                 
-                const response = await fetch(`${API_BASE}/api/auth/login', {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -396,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Usar setTimeout para garantir que o redirecionamento ocorra após a mensagem ser exibida
                     setTimeout(() => {
-                        window.location.href = '/menu';
+                        window.location.href = (typeof agePath==='function'?agePath('/menu'):'/menu');
                     }, 1000);
                 } else {
                     messageElement.textContent = data.message || 'Erro ao fazer login';
@@ -447,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageElement.className = 'auth-message';
                 messageElement.style.display = 'block';
                 
-                const response = await fetch(`${API_BASE}/api/auth/register', {
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -475,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Redirect to login page if no email confirmation is required
                     if (data.message.includes('não é necessária')) {
                         setTimeout(() => {
-                            window.location.href = '/login';
+                            window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
                         }, 2000);
                     }
                 } else {

@@ -6,6 +6,9 @@ function getAuthToken() {
 }
 
 function getApiBase() {
+  if (typeof window.getApiBase === 'function') {
+    return window.getApiBase();
+  }
   return (window.CONFIG && CONFIG.api && CONFIG.api.baseUrl) || window.AGE_API_URL || 'http://localhost:3001';
 }
 

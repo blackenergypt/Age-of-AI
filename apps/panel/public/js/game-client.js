@@ -115,7 +115,7 @@ class GameClient {
                 || sessionStorage.getItem('authToken');
             if (!token) {
                 console.error('Sem token JWT');
-                window.location.href = '/login';
+                window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
                 return false;
             }
 
@@ -160,7 +160,7 @@ class GameClient {
                 console.warn('WebSocket fechado', event.code, event.reason);
                 this.connected = false;
                 if (event.code === 4401) {
-                    window.location.href = '/login';
+                    window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
                 }
             };
 
@@ -188,7 +188,7 @@ class GameClient {
                 alert(message.data?.message || 'Sessão inválida. Faça login novamente.');
                 localStorage.removeItem('authToken');
                 sessionStorage.removeItem('authToken');
-                window.location.href = '/login';
+                window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
                 break;
 
             case 'match_error':
@@ -253,7 +253,7 @@ class GameClient {
     joinGame() {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
         if (!this.authToken) {
-            window.location.href = '/login';
+            window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
             return;
         }
 

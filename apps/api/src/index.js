@@ -63,6 +63,17 @@ app.get('/api/stats', async (_req, res) => {
     const onlinePlayers = nodes.reduce((sum, n) => sum + n.onlinePlayers, 0);
     const matches = nodes.reduce((sum, n) => sum + n.matches, 0);
     const best = pickLeastLoaded(nodes);
+    let gameServerWs = best?.wsUrl || config.gameServer.publicWsUrl;
+
+    if (config.gateway?.publicOrigin && best?.nodeId) {
+      try {
+        const u = new URL(config.gateway.publicOrigin);
+        const wsProto = u.protocol === 'https:' ? 'wss:' : 'ws:';
+        gameServerWs = `${wsProto}//${u.host}/gs/${best.nodeId}`;
+      } catch (_) {
+        // keep original
+      }
+    }
 
     res.json({
       onlinePlayers,
@@ -71,7 +82,7 @@ app.get('/api/stats', async (_req, res) => {
       gameNodes: nodes.length,
       registeredUsers,
       discordMembers,
-      gameServerWs: best?.wsUrl || config.gameServer.publicWsUrl
+      gameServerWs
     });
   } catch (error) {
     console.error('Erro ao obter estatísticas:', error);

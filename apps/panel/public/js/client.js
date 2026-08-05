@@ -60,7 +60,7 @@ class GameClient {
         alert(message.data?.message || 'Sessão inválida. Faça login novamente.');
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');
-        window.location.href = '/login';
+        window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
         break;
 
       case 'match_error':
@@ -98,7 +98,7 @@ class GameClient {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     if (!token) {
       console.error('Sem token JWT — redirecionar para login');
-      window.location.href = '/login';
+      window.location.href = (typeof agePath==='function'?agePath('/login'):'/login');
       return;
     }
 
