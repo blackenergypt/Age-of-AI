@@ -1,41 +1,24 @@
 {
   "name": "age-of-ai",
-  "version": "1.0.0",
-  "description": "Um jogo RTS estilo Age of Empires usando Node.js e WebSocket",
-  "main": "server/server.js",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Age of AI monorepo — web, panel, api, game-server",
   "scripts": {
-    "start": "node start.js",
-    "dev": "NODE_ENV=development nodemon start.js",
-    "server": "node server/server.js",
-    "test": "set NODE_ENV=test&& jest",
-    "test-client": "node test-client.js",
-    "install-auth": "npm install passport-discord passport-google-oauth20 passport-facebook passport-twitter"
+    "dev": "pnpm run --parallel --filter @age-of-ai/api --filter @age-of-ai/game-server --filter @age-of-ai/web --filter @age-of-ai/panel dev",
+    "dev:api": "pnpm --filter @age-of-ai/api dev",
+    "dev:game": "pnpm --filter @age-of-ai/game-server dev",
+    "dev:game:2": "GAME_SERVER_PORT=3003 GAME_NODE_ID=gs-2 GAME_SERVER_PUBLIC_WS_URL=ws://localhost:3003 pnpm --filter @age-of-ai/game-server start",
+    "dev:web": "pnpm --filter @age-of-ai/web dev",
+    "dev:panel": "pnpm --filter @age-of-ai/panel dev",
+    "start:api": "pnpm --filter @age-of-ai/api start",
+    "start:game": "pnpm --filter @age-of-ai/game-server start",
+    "start:web": "pnpm --filter @age-of-ai/web start",
+    "start:panel": "pnpm --filter @age-of-ai/panel start",
+    "test-client": "node apps/game-server/test-client.js",
+    "legacy:start": "node start.js"
   },
-  "dependencies": {
-    "@sentry/integrations": "^7.114.0",
-    "@sentry/node": "^7.120.4",
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.4",
-    "canvas": "^3.2.1",
-    "discord.js": "^14.25.1",
-    "dotenv": "^16.6.1",
-    "express": "^4.22.1",
-    "express-session": "^1.18.2",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.21.0",
-    "nodemailer": "^6.10.1",
-    "passport": "^0.7.0",
-    "passport-discord": "^0.1.4",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-twitter": "^1.0.4",
-    "simplex-noise": "^4.0.3",
-    "three": "^0.174.0",
-    "uuid": "^9.0.1",
-    "ws": "^8.19.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
+  "engines": {
+    "node": ">=18"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

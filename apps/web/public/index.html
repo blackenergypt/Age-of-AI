@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age of AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+    <audio id="background-music" loop preload="auto">
+        <source src="audio/background-music.wav" type="audio/wav">
+    </audio>
+
+    <button id="toggle-sound" class="sound-toggle" type="button" aria-label="Alternar som">
+        <svg id="sound-icon-on" class="sound-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11 5L6 9H3v6h3l5 4V5z"/>
+            <path d="M15.5 8.5a5 5 0 010 7" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M18 6a8 8 0 010 12" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <svg id="sound-icon-off" class="sound-svg is-hidden" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11 5L6 9H3v6h3l5 4V5z"/>
+            <path d="M18 9l-6 6M12 9l6 6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+    </button>
+
+    <main>
+        <section class="hero" aria-label="Age of AI">
+            <div class="hero-backdrop" aria-hidden="true"></div>
+            <div class="hero-veil" aria-hidden="true"></div>
+
+            <div class="hero-content">
+                <p class="hero-brand animate-in">Age of AI</p>
+                <h1 class="hero-headline animate-in delay-1">Construa o seu império</h1>
+                <p class="hero-support animate-in delay-2">Estratégia em tempo real. Reinos, alianças e guerras num mundo vivo.</p>
+
+                <div class="hero-cta animate-in delay-3">
+                    <a href="http://localhost:8081/login" class="btn btn-primary" id="login-btn">Entrar</a>
+                    <a href="http://localhost:8081/menu" class="btn btn-primary" id="account-btn" hidden>Minha Conta</a>
+                    <a href="http://localhost:8081/register" class="btn btn-ghost">Registrar</a>
+                </div>
+
+                <a href="#mundo" class="scroll-hint animate-in delay-4" aria-label="Ver mais">
+                    <span>Explorar</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+            </div>
+        </section>
+
+        <section id="mundo" class="section section-world">
+            <div class="section-inner">
+                <header class="section-head">
+                    <h2>Um mundo para conquistar</h2>
+                    <p>Três caminhos. Uma era.</p>
+                </header>
+
+                <div class="pillars">
+                    <article class="pillar">
+                        <h3>Reino</h3>
+                        <p>Colete recursos, ergue estruturas e expande o teu território.</p>
+                    </article>
+                    <article class="pillar">
+                        <h3>Guerra</h3>
+                        <p>Treina exércitos e decide batalhas com estratégia, não só força.</p>
+                    </article>
+                    <article class="pillar">
+                        <h3>Aliança</h3>
+                        <p>Une reinos, partilha comércio e domina o mapa em conjunto.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-realm">
+            <div class="section-inner realm-grid">
+                <div class="realm-copy">
+                    <h2>O reino já está vivo</h2>
+                    <p>Entra no lobby público ou cria uma partida privada com os teus aliados.</p>
+                    <a href="https://discord.gg/rhHhxxP43u" target="_blank" rel="noopener" class="btn btn-secondary">
+                        <svg class="discord-mark" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                            <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                        </svg>
+                        Comunidade no Discord
+                    </a>
+                </div>
+
+                <dl class="realm-stats" aria-label="Estatísticas do reino">
+                    <div>
+                        <dt>Jogadores online</dt>
+                        <dd id="online-players-welcome">0</dd>
+                    </div>
+                    <div>
+                        <dt>Reinos</dt>
+                        <dd id="kingdoms-count-welcome">0</dd>
+                    </div>
+                    <div>
+                        <dt>Registos</dt>
+                        <dd id="registered-users-count">0</dd>
+                    </div>
+                    <div>
+                        <dt>Discord</dt>
+                        <dd id="discord-members-count">0</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <a href="/terms.html">Termos de Uso e Políticas de Privacidade</a>
+        <span>Age of AI</span>
+    </footer>
+
+    <script src="js/home.js"></script>
+</body>
+</html>

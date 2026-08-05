@@ -1,0 +1,9 @@
+{
+  "name": "@age-of-ai/store",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Loja — placeholder. Implementar na fase de monetização.",
+  "scripts": {
+    "start": "node -e \"console.log('Store ainda não implementada. Ver docs/ARCHITECTURE.md')\""
+  }
+}

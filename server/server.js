@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 const WebSocketServer = require('./websocket');
-const Game = require('./game/game');
+const MatchManager = require('./game/match-manager');
 const config = require('./config');
 const { connectToDatabase } = require('./database');
 const session = require('express-session');
@@ -111,12 +111,11 @@ app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, '../public/404.html'));
 });
 
-// Inicializar o jogo
-const game = new Game();
+// Inicializar o gestor de partidas (rooms)
+const matchManager = new MatchManager();
 
 // Inicializar o WebSocket Server
-const wss = new WebSocketServer(server, game);
-game.setWebSocketServer(wss);
+const wss = new WebSocketServer(server, matchManager);
 
 // Middleware de tratamento de erros do Sentry
 app.use(sentryErrorHandler());
@@ -138,12 +137,10 @@ app.get('/api/stats', async (req, res) => {
             getDiscordMembersCount()
         ]);
         
-        const onlinePlayers = game.getOnlinePlayersCount(); // Método que retorna o número de jogadores online
-        const kingdoms = game.getKingdomsCount(); // Método que retorna o número de reinos existentes
-
         res.json({
-            onlinePlayers: onlinePlayers,
-            kingdoms: kingdoms,
+            onlinePlayers: matchManager.getOnlinePlayersCount(),
+            kingdoms: matchManager.getKingdomsCount(),
+            matches: matchManager.getMatchCount(),
             registeredUsers: registeredUsers,
             discordMembers: discordMembers
         });
@@ -151,6 +148,18 @@ app.get('/api/stats', async (req, res) => {
         console.error('Erro ao obter estatísticas:', error);
         res.status(500).json({ message: 'Erro ao obter estatísticas' });
     }
+});
+
+// Lista pública de partidas (HTTP)
+app.get('/api/matches', (req, res) => {
+    res.json({
+        matches: matchManager.listMatches(),
+        stats: {
+            onlinePlayers: matchManager.getOnlinePlayersCount(),
+            kingdoms: matchManager.getKingdomsCount(),
+            matches: matchManager.getMatchCount()
+        }
+    });
 });
 
 // Middleware para lidar com erros 404

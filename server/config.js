@@ -5,13 +5,13 @@ require('dotenv').config({
 });
 
 console.log('Ambiente:', process.env.NODE_ENV);
-console.log('Variáveis de ambiente carregadas:');
-console.log('DISCORD_CLIENT_ID:', process.env.DISCORD_CLIENT_ID);
-console.log('DISCORD_CLIENT_SECRET:', process.env.DISCORD_CLIENT_SECRET);
-console.log('SENTRY_DSN:', process.env.SENTRY_DSN);
-console.log('TWITTER_CONSUMER_KEY:', process.env.TWITTER_CONSUMER_KEY);
-console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-console.log('FACEBOOK_APP_ID:', process.env.FACEBOOK_APP_ID);
+console.log('OAuth configurado:', {
+  discord: Boolean(process.env.DISCORD_CLIENT_ID),
+  twitter: Boolean(process.env.TWITTER_CONSUMER_KEY),
+  google: Boolean(process.env.GOOGLE_CLIENT_ID),
+  facebook: Boolean(process.env.FACEBOOK_APP_ID),
+  sentry: Boolean(process.env.SENTRY_DSN)
+});
 
 const config = {
     server: {

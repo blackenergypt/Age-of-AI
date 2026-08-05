@@ -1,29 +1,10 @@
 #!/usr/bin/env node
-
-console.log('🚀 Iniciando Age of AI Server...\n');
-
-// Verificar se as dependências estão instaladas
-try {
-  require('express');
-  require('ws');
-  console.log('✅ Dependências básicas verificadas');
-} catch (error) {
-  console.error('❌ Erro: Dependências não instaladas');
-  console.error('Execute: npm install ou pnpm install');
-  process.exit(1);
-}
-
-// Configurar variáveis de ambiente
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'development';
-}
-
-// Importar o servidor
-try {
-  require('./server/server.js');
-} catch (error) {
-  console.error('❌ Erro ao iniciar o servidor:', error.message);
-  console.error('\nStack trace:');
-  console.error(error.stack);
-  process.exit(1);
-}
+console.log('Age of AI monorepo');
+console.log('Usa: pnpm dev');
+console.log('Docs: docs/ARCHITECTURE.md');
+console.log('');
+console.log('Serviços:');
+console.log('  api          http://localhost:3001');
+console.log('  game-server  ws://localhost:3002');
+console.log('  web          http://localhost:8080');
+console.log('  panel        http://localhost:8081');

@@ -7,6 +7,13 @@ class GameClient {
         this.playerName = 'Jogador';
         this.gameMode = 'online';
         this.gameName = '';
+        this.matchId = null;
+        this.matchPassword = null;
+        this.maxPlayers = 4;
+        this.kingdomName = null;
+        this.matchInfo = null;
+        this.availableMatches = [];
+        this.authToken = null;
         
         this.world = {
             tiles: [],
@@ -100,22 +107,224 @@ class GameClient {
     
     connectToServer() {
         try {
-            const serverUrl = CONFIG?.server?.url || 'ws://localhost:8080';
-            console.log('Tentando conectar ao servidor:', serverUrl);
-            
-            setTimeout(() => {
-                console.log('Conectado ao servidor (simulação)');
+            const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            if (!token) {
+                console.error('Sem token JWT');
+                window.location.href = '/login';
+                return false;
+            }
+
+            this.authToken = token;
+            const serverUrl = CONFIG?.server?.url || (
+                window.location.protocol === 'https:'
+                    ? `wss://${window.location.host}`
+                    : `ws://${window.location.host}`
+            );
+            console.log('Conectando ao servidor WebSocket:', serverUrl);
+
+            this.socket = new WebSocket(serverUrl);
+
+            this.socket.onopen = () => {
+                console.log('WebSocket aberto');
                 this.connected = true;
                 this.reconnectAttempts = 0;
-                this.initialize();
-                this.simulateInitialData();
-            }, 1000);
-            
+            };
+
+            this.socket.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    this.handleServerMessage(message);
+                } catch (error) {
+                    console.error('Erro ao processar mensagem WS:', error);
+                }
+            };
+
+            this.socket.onclose = (event) => {
+                console.warn('WebSocket fechado', event.code, event.reason);
+                this.connected = false;
+                if (event.code === 4401) {
+                    window.location.href = '/login';
+                }
+            };
+
+            this.socket.onerror = (error) => {
+                console.error('Erro na conexão WebSocket:', error);
+            };
+
             return true;
         } catch (error) {
             console.error('Erro ao conectar ao servidor:', error);
             return false;
         }
+    }
+
+    handleServerMessage(message) {
+        switch (message.type) {
+            case 'connection':
+                this.playerId = message.data.clientId;
+                this.availableMatches = message.data.matches || [];
+                this.joinGame();
+                break;
+
+            case 'auth_error':
+                console.error('Auth WS falhou:', message.data);
+                alert(message.data?.message || 'Sessão inválida. Faça login novamente.');
+                localStorage.removeItem('authToken');
+                sessionStorage.removeItem('authToken');
+                window.location.href = '/login';
+                break;
+
+            case 'match_error':
+            case 'error':
+                console.error('Erro de partida:', message.data);
+                if (this.uiManager) {
+                    this.uiManager.showNotification(message.data?.message || 'Erro na partida', 'error', 4000);
+                } else {
+                    alert(message.data?.message || 'Erro na partida');
+                }
+                break;
+
+            case 'match_joined':
+                this.matchId = message.data?.match?.id || null;
+                this.matchInfo = message.data?.match || null;
+                console.log('Entrou na partida:', this.matchId, this.matchInfo?.name);
+                if (this.uiManager && this.matchInfo) {
+                    this.uiManager.showNotification(
+                        `Partida: ${this.matchInfo.name} (${this.matchInfo.id})`,
+                        'success',
+                        4000
+                    );
+                }
+                break;
+
+            case 'game_state':
+                this.matchId = message.data?.matchId || this.matchId;
+                this.matchInfo = message.data?.match || this.matchInfo;
+                this.applyServerState(message.data);
+                if (!this.renderer) {
+                    this.initialize();
+                }
+                break;
+
+            case 'game_update':
+                this.applyServerState(message.data);
+                break;
+
+            case 'player_joined':
+                console.log('Jogador entrou:', message.data?.player?.name);
+                if (message.data?.match) {
+                    this.matchInfo = message.data.match;
+                }
+                break;
+
+            case 'player_left':
+                console.log('Jogador saiu:', message.data?.playerId);
+                if (message.data?.match) {
+                    this.matchInfo = message.data.match;
+                }
+                break;
+
+            case 'matches_list':
+                this.availableMatches = message.data?.matches || [];
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    joinGame() {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+        if (!this.authToken) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const payload = {
+            token: this.authToken,
+            playerName: this.playerName,
+            kingdomName: this.kingdomName || null
+        };
+
+        if (this.matchId) {
+            this.socket.send(JSON.stringify({
+                type: 'join_match',
+                data: {
+                    ...payload,
+                    matchId: this.matchId,
+                    password: this.matchPassword || null
+                }
+            }));
+            return;
+        }
+
+        if (this.gameMode === 'private' && this.gameName) {
+            this.socket.send(JSON.stringify({
+                type: 'create_match',
+                data: {
+                    ...payload,
+                    name: this.gameName,
+                    maxPlayers: this.maxPlayers || 4,
+                    password: this.matchPassword || null,
+                    isPrivate: true
+                }
+            }));
+            return;
+        }
+
+        // Lobby público
+        this.socket.send(JSON.stringify({
+            type: 'join_game',
+            data: payload
+        }));
+    }
+
+    applyServerState(state) {
+        if (!state) return;
+
+        this.serverGameState = state;
+        this.gameState.playerCount = state.players?.length || 0;
+
+        const me = state.players?.find(
+            (p) => p.userId && String(p.userId) === this.getLocalUserId()
+        ) || state.players?.find((p) => p.name === this.playerName);
+
+        if (me) {
+            this.playerId = me.id;
+            this.resources = { ...me.resources };
+            if (this.uiManager) {
+                this.uiManager.updateResources(this.resources);
+            }
+        }
+
+        // Nota: renderização local ainda usa biomes simulados até o passo "thin client".
+        // O join autenticado e o estado do servidor já estão ativos.
+    }
+
+    getLocalUserId() {
+        try {
+            const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || 'null');
+            return user?.id ? String(user.id) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    sendServerCommand(command) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+            console.warn('WebSocket não está pronto para enviar comando');
+            return false;
+        }
+        if (!this.authToken) {
+            console.warn('Sem token — comando ignorado');
+            return false;
+        }
+
+        this.socket.send(JSON.stringify({
+            type: 'command',
+            data: command
+        }));
+        return true;
     }
     
     initialize() {
@@ -851,6 +1060,13 @@ class GameClient {
                 unit.target = { x, y };
                 unit.gatherState = 'idle';
             }
+        });
+
+        this.sendServerCommand({
+            type: 'move_units',
+            unitIds: this.selectedEntities,
+            targetX: x,
+            targetY: y
         });
         
         if (this.uiManager) {

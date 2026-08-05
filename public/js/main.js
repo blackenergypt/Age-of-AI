@@ -67,6 +67,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const gameMode = urlParams.get('mode');
             const gameName = urlParams.get('name');
+            const matchId = urlParams.get('match');
+            const password = urlParams.get('password');
+            const maxPlayers = urlParams.get('max');
+            const kingdomName = urlParams.get('kingdom');
+            
+            if (matchId) {
+                gameClient.matchId = matchId;
+            }
+
+            if (password) {
+                gameClient.matchPassword = password;
+            }
+
+            if (kingdomName) {
+                gameClient.kingdomName = kingdomName;
+            }
+
+            if (maxPlayers) {
+                gameClient.maxPlayers = Number(maxPlayers) || 4;
+            }
             
             if (gameMode === 'private' && gameName) {
                 gameClient.gameMode = 'private';

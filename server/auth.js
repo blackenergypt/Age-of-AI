@@ -13,33 +13,41 @@ const game = require('./game/game');
 // SMTP transporter setup (only if credentials are available)
 let transporter = null;
 if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-    transporter = nodemailer.createTransport({
-        service: 'smtp',
+    const smtpPort = Number(process.env.SMTP_PORT) || 587;
+
+    const candidate = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false,
+        port: smtpPort,
+        secure: smtpPort === 465,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
         },
         tls: {
-            rejectUnauthorized: false 
-        }
+            rejectUnauthorized: false
+        },
+        connectionTimeout: 5000,
+        greetingTimeout: 5000,
+        socketTimeout: 5000
     });
-    
-    // Verificar conexão com o servidor SMTP
-    transporter.verify(function(error, success) {
-        if (error) {
-            console.error('Erro na configuração do servidor SMTP:', error);
-        } else {
+
+    // Só ativa o transporter se o host SMTP responder
+    candidate.verify()
+        .then(() => {
+            transporter = candidate;
             console.log('Servidor SMTP está pronto para enviar mensagens');
-        }
-    });
-    
-    console.log('Email transporter configured');
+        })
+        .catch((error) => {
+            transporter = null;
+            console.warn(
+                `SMTP indisponível (${process.env.SMTP_HOST}): ${error.code || error.message}. Email desativado neste arranque.`
+            );
+        });
 } else {
     console.log('Email transporter not configured - missing credentials');
 }
+
+const { verifyAccessToken } = require('./utils/jwt');
 
 // Middleware para verificar se o token é válido
 const verifyToken = (req, res, next) => {
@@ -49,13 +57,13 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ message: 'Token não fornecido' });
     }
     
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        req.user = decoded;
-        next();
-    } catch (error) {
+    const decoded = verifyAccessToken(token);
+    if (!decoded) {
         return res.status(401).json({ message: 'Token inválido' });
     }
+
+    req.user = decoded;
+    next();
 };
 
 // Rota para verificar se o token é válido

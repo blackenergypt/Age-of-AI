@@ -1,0 +1,14 @@
+{
+  "name": "@age-of-ai/shared",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.js",
+  "description": "Protocolo e registry Redis Age of AI",
+  "dependencies": {
+    "redis": "^4.7.1"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./registry": "./src/registry.js"
+  }
+}

@@ -1,43 +1,42 @@
 # Age of AI
 
-## Descrição
-Age of AI é um jogo de estratégia em tempo real inspirado em Age of Empires, construído usando Node.js e tecnologia WebSocket. O jogo permite que os jogadores construam reinos, participem de batalhas e formem alianças em um mundo dinâmico.
+RTS multiplayer — monorepo escalável.
 
-## Funcionalidades
-- Sistema de registro e login de usuários
-- Confirmação por email para novos usuários
-- Login via redes sociais (Discord, Twitter, Google e Facebook)
-- Gameplay multiplayer em tempo real usando WebSocket
-- Mundo de jogo dinâmico com gerenciamento de recursos
-- Sistema de comércio entre jogadores
-- Ciclo de dia e noite que afeta a jogabilidade
-- Diferentes biomas e terrenos
+## Arquitetura
 
-## Tecnologias Utilizadas
+Ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-### Backend
-- **Node.js**: Plataforma de execução JavaScript
-- **Express**: Framework web para Node.js
-- **WebSocket (ws)**: Para comunicação em tempo real
-- **Passport.js**: Para autenticação social
-- **JWT**: Para autenticação baseada em tokens
-- **Bcrypt**: Para criptografia de senhas
-- **Nodemailer**: Para envio de emails de confirmação
+## Apps
 
-### Frontend
-- **HTML5/CSS3**: Para estrutura e estilo da interface
-- **JavaScript**: Para interatividade do cliente
-- **Canvas API**: Para renderização do jogo
+| App | Porta | Comando |
+|-----|-------|---------|
+| web (landing) | 8080 | `pnpm dev:web` |
+| panel (jogador) | 8081 | `pnpm dev:panel` |
+| api | 3001 | `pnpm dev:api` |
+| game-server | 3002 | `pnpm dev:game` |
 
-### Monitoramento e Depuração
-- **Sentry**: Para monitoramento de erros e desempenho
+## Arranque
 
-## Instalação
+```bash
+pnpm install
+pnpm dev
+```
 
-### Pré-requisitos
-- Node.js (v14 ou superior)
-- NPM ou PNPM
+Infra local (Mongo + Redis):
 
-### Clonar o Repositório
-git clone https://github.com/seu-usuario/age-of-ai.git
-cd age-of-ai 
+```bash
+docker compose up -d
+```
+
+## Estrutura
+
+```
+apps/api
+apps/game-server   # duplicável (vários nós)
+apps/web
+apps/panel
+apps/store         # placeholder
+packages/shared
+docs/ARCHITECTURE.md
+infra/
+```
