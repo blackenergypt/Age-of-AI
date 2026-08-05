@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { Cinzel, Manrope } from 'next/font/google';
+import { config as fontAwesomeConfig } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import { SoundToggle } from '@/components/SoundToggle';
 import './globals.css';
+
+fontAwesomeConfig.autoAddCss = false;
 
 const cinzel = Cinzel({
   subsets: ['latin'],

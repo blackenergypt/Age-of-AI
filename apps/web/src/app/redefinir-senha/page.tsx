@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ResetPasswordPage() {
   return (
-    <AuthShell title="Age of AI" tagline="Nova senha">
+    <AuthShell title="Nova senha">
       <Suspense fallback={<p className="auth-copy">A carregar…</p>}>
         <ResetPasswordForm />
       </Suspense>

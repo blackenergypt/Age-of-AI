@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <AuthShell title="Age of AI" tagline="Cria a tua conta" wide>
+    <AuthShell title="Cria a tua conta" wide>
       <RegisterForm />
     </AuthShell>
   );

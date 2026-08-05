@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AuthFailurePage() {
   return (
-    <AuthShell title="Age of AI" tagline="Não foi possível autenticar">
+    <AuthShell title="Não foi possível autenticar">
       <p className="auth-copy">
         Algo correu mal no login social. Tenta de novo ou usa email e senha.
       </p>

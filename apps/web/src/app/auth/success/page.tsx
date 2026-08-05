@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AuthSuccessPage() {
   return (
-    <AuthShell title="Age of AI" tagline="A concluir autenticação…">
+    <AuthShell title="A concluir autenticação…">
       <Suspense fallback={<div className="auth-loader" aria-hidden="true" />}>
         <AuthSuccessClient />
       </Suspense>

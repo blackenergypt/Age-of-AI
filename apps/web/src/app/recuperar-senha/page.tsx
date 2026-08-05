@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthShell title="Age of AI" tagline="Recuperar senha">
+    <AuthShell title="Recuperar senha">
       <ForgotPasswordForm />
     </AuthShell>
   );

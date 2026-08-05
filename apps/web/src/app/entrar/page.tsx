@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <AuthShell title="Age of AI" tagline="Entra no teu reino">
+    <AuthShell title="Entra no teu reino">
       <Suspense fallback={<p className="auth-copy">A carregar…</p>}>
         <LoginForm />
       </Suspense>
