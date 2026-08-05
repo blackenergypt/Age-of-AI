@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { SoundToggle } from '@/components/SoundToggle';
+import { ROUTES } from '@/lib/app-paths';
 
 type SiteNavProps = {
   /** Menu sobre o hero (página principal) */
@@ -11,7 +12,7 @@ type SiteNavProps = {
 
 export function SiteNav({ overlay = false }: SiteNavProps) {
   const [open, setOpen] = useState(false);
-  const [accountHref, setAccountHref] = useState('/login');
+  const [accountHref, setAccountHref] = useState<string>(ROUTES.login);
   const [accountLabel, setAccountLabel] = useState('Entrar');
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export function SiteNav({ overlay = false }: SiteNavProps) {
     if (!token || !userStr) return;
     try {
       const user = JSON.parse(userStr);
-      setAccountHref('/app/menu');
+      setAccountHref(ROUTES.menu);
       setAccountLabel(user.nickname || user.name || 'Conta');
     } catch {
       // keep defaults
@@ -43,7 +44,7 @@ export function SiteNav({ overlay = false }: SiteNavProps) {
   return (
     <header className={`site-header${overlay ? ' site-header-overlay' : ''}`}>
       <nav className="site-nav" aria-label="Menu principal">
-        <Link href="/" className="site-nav-brand" onClick={close}>
+        <Link href={ROUTES.home} className="site-nav-brand" onClick={close}>
           Age of AI
         </Link>
 
@@ -65,13 +66,13 @@ export function SiteNav({ overlay = false }: SiteNavProps) {
             <a href="/#mundo" onClick={close}>
               Mundo
             </a>
-            <a href="/#ranks" onClick={close}>
+            <Link href={ROUTES.ranks} onClick={close}>
               Ranking
-            </a>
+            </Link>
             <a href="/#cronicas" onClick={close}>
               Crónicas
             </a>
-            <Link href="/blog" onClick={close}>
+            <Link href={ROUTES.blog} onClick={close}>
               Blog
             </Link>
           </div>

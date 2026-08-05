@@ -1,0 +1,53 @@
+.game-page {
+  overflow: hidden;
+  min-height: 100vh;
+  background: #0a100c;
+  position: relative;
+}
+
+.game-page #loading-screen.is-visible,
+.game-page #loading-screen {
+  z-index: 20;
+}
+
+.game-exit {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 30;
+  min-height: 2.4rem;
+  padding: 0 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(212, 180, 90, 0.28);
+  background: rgba(16, 24, 15, 0.72);
+  color: #e8c96a;
+  text-decoration: none;
+  font-family: var(--font-body), Manrope, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.game-exit:hover {
+  border-color: #d4b45a;
+  color: #f3ede0;
+}
+
+.game-back-link {
+  display: inline-block;
+  margin-top: 1.25rem;
+  color: #e8c96a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.game-back-link:hover {
+  text-decoration: underline;
+}
+
+body:has(.game-page) > .sound-toggle-floating {
+  display: none;
+}

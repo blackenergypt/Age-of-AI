@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { SiteNav } from '@/components/SiteNav';
 import { RankList } from '@/components/RankList';
 import { seasonRanks } from '@/content/ranks';
+import { ROUTES } from '@/lib/app-paths';
 
 export const metadata: Metadata = {
   title: 'Ranking — Age of AI',
@@ -28,7 +29,7 @@ export default function RanksPage() {
         <p className="rank-note">
           Ranking editorial da Temporada I — será ligado a dados reais quando a persistência de
           partidas estiver activa.{' '}
-          <Link href="/login" className="text-link">
+          <Link href={ROUTES.login} className="text-link">
             Entra e sobe
           </Link>
         </p>

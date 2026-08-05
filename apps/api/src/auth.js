@@ -48,6 +48,36 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
 
 const { verifyAccessToken } = require('./utils/jwt');
 
+/** One-time OAuth handoff codes (não põe JWT na URL). */
+const oauthHandoffs = new Map();
+const HANDOFF_TTL_MS = 60_000;
+
+function createOAuthHandoff(token, user) {
+    const code = crypto.randomBytes(24).toString('hex');
+    oauthHandoffs.set(code, { token, user, exp: Date.now() + HANDOFF_TTL_MS });
+    return code;
+}
+
+function consumeOAuthHandoff(code) {
+    if (!code || typeof code !== 'string') return null;
+    const entry = oauthHandoffs.get(code);
+    oauthHandoffs.delete(code);
+    if (!entry || entry.exp < Date.now()) return null;
+    return entry;
+}
+
+function redirectOAuthSuccess(res, token, user) {
+    const code = createOAuthHandoff(token, user);
+    res.redirect(`${config.frontend.url}/auth/success?code=${code}`);
+}
+
+setInterval(() => {
+    const now = Date.now();
+    for (const [code, entry] of oauthHandoffs) {
+        if (entry.exp < now) oauthHandoffs.delete(code);
+    }
+}, 30_000).unref?.();
+
 // Middleware para verificar se o token é válido
 const verifyToken = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -319,8 +349,8 @@ router.get('/discord/callback', (req, res, next) => {
             avatar: req.user.avatar ? `https://cdn.discordapp.com/avatars/${req.user.id}/${req.user.avatar}.png` : null
         };
         
-        // Redirecionar para uma página que armazenará o token e redirecionará para o menu
-        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`);
+        // Redirecionar com code one-time (sem JWT na query)
+        redirectOAuthSuccess(res, token, userData);
     });
 });
 
@@ -336,7 +366,7 @@ router.get('/google/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        redirectOAuthSuccess(res, token, req.user);
     }
 );
 
@@ -351,7 +381,7 @@ router.get('/facebook/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        redirectOAuthSuccess(res, token, req.user);
     }
 );
 
@@ -366,9 +396,19 @@ router.get('/twitter/callback',
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiresIn }
         );
-        res.redirect(`${config.frontend.url}/auth/success?token=${token}&user=${encodeURIComponent(JSON.stringify(req.user))}`);
+        redirectOAuthSuccess(res, token, req.user);
     }
 );
+
+/** Troca code OAuth one-time por token+user (body JSON). */
+router.post('/handoff', (req, res) => {
+    const code = req.body?.code;
+    const entry = consumeOAuthHandoff(code);
+    if (!entry) {
+        return res.status(400).json({ message: 'Código inválido ou expirado' });
+    }
+    return res.json({ token: entry.token, user: entry.user });
+});
 
 // Rota para recuperação de senha
 router.post('/forgot-password', async (req, res) => {

@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { ROUTES } from '@/lib/app-paths';
 
 type AuthUser = {
   nickname?: string;
@@ -27,18 +29,18 @@ export function HeroCta() {
   return (
     <div className="hero-cta animate-in delay-3">
       {user ? (
-        <a href="/app/menu" className="btn btn-primary">
+        <Link href={ROUTES.menu} className="btn btn-primary">
           {label}
-        </a>
+        </Link>
       ) : (
-        <a href="/login" className="btn btn-primary">
+        <Link href={ROUTES.login} className="btn btn-primary">
           Entrar
-        </a>
+        </Link>
       )}
       {!user && (
-        <a href="/register" className="btn btn-ghost">
-          Registrar
-        </a>
+        <Link href={ROUTES.register} className="btn btn-ghost">
+          Registar
+        </Link>
       )}
     </div>
   );
